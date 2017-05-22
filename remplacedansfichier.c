@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 	int file_to_write = 0;
 	int file_to_read = 0;
 	int char_i = 0;
-	unsigned char read_buffer[BUFFER_LEN] = "";
+	char read_buffer[BUFFER_LEN] = "";
 	off_t lseek_return = 0;
 
 	if (argc < NB_PARAMETERS) {
