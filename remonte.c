@@ -76,6 +76,12 @@ int main(int argc, char** argv) {
 				perror("Error write");
 				return error;
 			}
+			write_return = write(file_to_write, "\0", strlen("\0"));
+			if (write_return == -1) {
+				error = errno;
+				perror("Error write");
+				return error;
+			}
 			close_return = close(file_to_write);
 			if (close_return == -1) {
 				error = errno;

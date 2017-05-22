@@ -4,7 +4,7 @@
 #define BAD_PARAMETERS -1
 
 #define RW 00600
-#define BUFFER_LEN 1
+#define BUFFER_LEN 8
 #define SEPARATEUR ' '
 
 #include <stdio.h> /* perror, fprintf, sprintf */
@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
 	int file_to_read = 0;
 	int char_i = 0;
 	unsigned char read_buffer[BUFFER_LEN] = "";
+	off_t lseek_return = 0;
 
 	if (argc < NB_PARAMETERS) {
 		fprintf_return = fprintf(stdout, "Usage: %s <fichier a creer> <mot de remplacement> <suite de mots a ecrire> \n", argv[0]);
@@ -50,7 +51,7 @@ int main(int argc, char** argv) {
 			perror("Error write");
 			return error;
 		}
-		write_return = write(file_to_write, " ", sizeof(char));
+		write_return = write(file_to_write, " ", strlen(" "));
 		if (write_return == -1) {
 			error = errno;
 			perror("Error write");
@@ -64,6 +65,12 @@ int main(int argc, char** argv) {
 		arg_i += 1;
 	}
 	fprintf(stdout, "\n");
+	write_return = write(file_to_write, "\0", strlen("\0"));
+	if (write_return == -1) {
+		error = errno;
+		perror("Error write");
+		return error;
+	}
 	close_return = close(file_to_write);
 	if (close_return == -1) {
 		error = errno;
@@ -82,18 +89,7 @@ int main(int argc, char** argv) {
 			perror("Error read");
 			return error;
 		}
-		fprintf_return = fprintf(stdout, "Caracteres lus: ");
-		if (fprintf_return < 0) {
-			perror("Error fprintf");
-			return fprintf_return;
-		}
-		write_return = write(STDOUT_FILENO, (const void*)read_buffer, (size_t)BUFFER_LEN);
-		if (write_return == -1) {
-			error = errno;
-			perror("Error write");
-			return write_return;
-		}
-		fprintf_return = fprintf(stdout, "\n");
+		fprintf_return = fprintf(stdout, "chaine lue: %s \n", (unsigned char*)read_buffer);
 		if (fprintf_return < 0) {
 			perror("Error fprintf");
 			return fprintf_return;
@@ -110,6 +106,12 @@ int main(int argc, char** argv) {
 				if (close_return == -1) {
 					error = errno;
 					perror("Error close");
+					return error;
+				}
+				lseek_return = lseek(file_to_write, (off_t)char_i + 1, SEEK_SET);
+				if (lseek_return == -1) {
+					error = errno;
+					perror("Error lseek");
 					return error;
 				}
 				write_return = write(file_to_write, (const void*)argv[2], strlen(argv[2]));
