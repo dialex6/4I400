@@ -10,6 +10,7 @@
 
 #define BUFFER_LEN 1
 #define RW 00600
+#define FIN_DE_CHAINE '\0'
 
 #include <stdio.h> /* perror, fprintf, sprintf */
 #include <errno.h> /* errno */
@@ -36,7 +37,7 @@ int main(int argc, char** argv) {
 	int somme = 0;
 	ssize_t read_return = 0;
 	ssize_t write_return = 0;
-	char read_buffer[BUFFER_LEN] = "";
+	char read_buffer[BUFFER_LEN + 1] = "";
 	char write_buffer[BUFFER_LEN] = "";
 	off_t lseek_return = 0;
 
@@ -71,12 +72,6 @@ int main(int argc, char** argv) {
 			valeur_aleatoire = (int)(10 * (float)rand() / RAND_MAX);
 			sprintf_return = sprintf(write_buffer, "%d", valeur_aleatoire);
 			write_return = write(file_to_write, (const void*)write_buffer, (size_t)sprintf_return);
-			if (write_return == -1) {
-				error = errno;
-				perror("Error write");
-				return error;
-			}
-			write_return = write(file_to_write, "\0", strlen("\0"));
 			if (write_return == -1) {
 				error = errno;
 				perror("Error write");
@@ -117,6 +112,7 @@ int main(int argc, char** argv) {
 		perror("Error lseek");
 		return error;
 	}
+	read_buffer[BUFFER_LEN + 1] = FIN_DE_CHAINE;
 	while ((read_return = read(file_to_read, (void*)memset((void*)read_buffer, 0, (size_t)BUFFER_LEN), (size_t)BUFFER_LEN)) != 0) {
 		if (read_return == -1) {
 			error = errno;

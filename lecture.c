@@ -9,6 +9,7 @@
 #define LIBC_IO "-c"
 #define BUFFER_LEN 1
 #define READ "r"
+#define FIN_DE_CHAINE '\0'
 
 #include <stdio.h>
 #include <errno.h>
@@ -27,7 +28,7 @@ int main(int argc, char** argv) {
 	int close_return = 0;
 	pid_t fork_return = NULL;
 	ssize_t read_return = 0;
-	char read_buffer[BUFFER_LEN] = "";
+	unsigned char read_buffer[BUFFER_LEN + 1] = "";
 
 	if (argc != NB_PARAMETERS) {
 		fprintf_return = fprintf(stdout, "Usage: %s <option: -p -c> <fichier a lire> \n", argv[0]);
@@ -37,6 +38,7 @@ int main(int argc, char** argv) {
 		}
 		return BAD_PARAMETERS;
 	}
+	read_buffer[BUFFER_LEN + 1] = FIN_DE_CHAINE;
 	if (strcmp(argv[1], POSIX_IO) == 0) {
 		file_to_read = open(argv[2], O_RDONLY);
 		if (file_to_read == -1) {

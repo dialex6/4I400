@@ -4,8 +4,9 @@
 #define BAD_PARAMETERS -1
 
 #define RW 00600
-#define BUFFER_LEN 8
+#define BUFFER_LEN 1
 #define SEPARATEUR ' '
+#define FIN_DE_CHAINE '\0'
 
 #include <stdio.h> /* perror, fprintf, sprintf */
 #include <errno.h> /* errno */
@@ -26,7 +27,7 @@ int main(int argc, char** argv) {
 	int file_to_write = 0;
 	int file_to_read = 0;
 	int char_i = 0;
-	char read_buffer[BUFFER_LEN] = "";
+	char read_buffer[BUFFER_LEN + 1] = "";
 	off_t lseek_return = 0;
 
 	if (argc < NB_PARAMETERS) {
@@ -65,12 +66,6 @@ int main(int argc, char** argv) {
 		arg_i += 1;
 	}
 	fprintf(stdout, "\n");
-	write_return = write(file_to_write, "\0", strlen("\0"));
-	if (write_return == -1) {
-		error = errno;
-		perror("Error write");
-		return error;
-	}
 	close_return = close(file_to_write);
 	if (close_return == -1) {
 		error = errno;
@@ -83,6 +78,7 @@ int main(int argc, char** argv) {
 		perror("Error open");
 		return error;
 	}
+	read_buffer[BUFFER_LEN + 1] = FIN_DE_CHAINE;
 	while ((read_return = read(file_to_read, (void*)memset((void*)read_buffer, 0, (size_t)BUFFER_LEN), (size_t)BUFFER_LEN)) != 0) {
 		if (read_return == -1) {
 			error = errno;
