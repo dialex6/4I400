@@ -3,11 +3,11 @@
 #define NB_PARAMETERS 3
 #define BAD_PARAMETERS -1
 
-#include <stdio.h> /* perror, fprintf, sprintf */
+#include <stdio.h> /* perror, fprintf, sprintf, fopen, fgetc */
 #include <errno.h> /* errno */
 #include <sys/stat.h> /* open, fchmod, lstat, stat */
-#include <sys/types.h> /* open, lseek, lstat, stat */
-#include <unistd.h> /* read, write, lseek, dup, lstat, stat */
+#include <sys/types.h> /* open, lseek, lstat, stat, wait */
+#include <unistd.h> /* read, write, lseek, dup, lstat, stat, fork, exit, sleep, execv, execl */
 #include <stdlib.h> /* atoi, EXIT_SUCCESS, EXIT_FAILLURE, rand */
 #include <string.h> /* memset, strcmp */
 

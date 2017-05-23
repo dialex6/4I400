@@ -12,12 +12,12 @@
 #define RO 00600
 #define RW 00666
 
-#include <stdio.h> /* perror, fprintf, sprintf */
+#include <stdio.h> /* perror, fprintf, sprintf, fopen, fgetc */
 #include <errno.h> /* errno */
-#include <sys/types.h> /* open, lseek, lstat, stat*/
 #include <sys/stat.h> /* open, fchmod, lstat, stat, chmod */
-#include <unistd.h> /* read, write, lseek, dup, stat, lstat, unlink */
-#include <stdlib.h> /* atoi, EXIT_SUCCESS, EXIT_FAILLLURE, rand */
+#include <sys/types.h> /* open, lseek, lstat, stat, wait */
+#include <unistd.h> /* read, write, lseek, dup, lstat, stat, fork, exit, sleep, execv, execl , unlink */
+#include <stdlib.h> /* atoi, EXIT_SUCCESS, EXIT_FAILLURE, rand */
 #include <string.h> /* memset, strcmp, strlen */
 #include <ctype.h> /* toupper */
 
