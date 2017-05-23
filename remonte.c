@@ -15,11 +15,12 @@
 #include <stdio.h> /* perror, fprintf, sprintf */
 #include <errno.h> /* errno */
 #include <stdlib.h>  /* atoi, EXIT_SUCCESS, EXIT_FAILLURE, rand */
-#include <sys/types.h> /* open, lseek */
+#include <sys/types.h> /* open, lseek, wait */
 #include <sys/stat.h> /* open, fchmod */
 #include <fcntl.h> /* open */
-#include <unistd.h> /* read, write, lseek, dup */
+#include <unistd.h> /* read, write, lseek, dup, fork, exit, sleep, execv, execl */
 #include <string.h> /* memset */
+#include <sys/wait.h> /* wait */
 
 int main(int argc, char** argv) {
 	pid_t fork_return = NULL;

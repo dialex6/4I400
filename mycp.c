@@ -10,10 +10,10 @@
 #include <stdio.h> /* perror, fprintf */
 #include <errno.h> /* errno */
 #include <stdlib.h>  /* atoi, EXIT_SUCCESS, EXIT_FAILLURE */
-#include <sys/types.h> /* open */
+#include <sys/types.h> /* open, wait */
 #include <sys/stat.h> /* open, fchmod */
 #include <fcntl.h> /* open */
-#include <unistd.h> /* read, write */
+#include <unistd.h> /* fork, exit, read, write, sleep, execv, execl */
 #include <string.h> /* memset */
 
 int main(int argc, char** argv) {

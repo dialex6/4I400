@@ -6,26 +6,31 @@
 #define CHILD_SUCCESS 0
 
 #define POSIX_IO "-p"
-#define LIBC_IO "-c"
+#define GLIBC_IO "-c"
 #define BUFFER_LEN 1
 #define READ "r"
 #define FIN_DE_CHAINE '\0'
 
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include <stdio.h> /* perror, fprintf, sprintf, fopen, fgetc */
+#include <errno.h> /* errno */
+#include <stdlib.h>  /* atoi, EXIT_SUCCESS, EXIT_FAILLURE, rand */
+#include <sys/types.h> /* open, lseek, wait */
+#include <sys/stat.h> /* open, fchmod */
+#include <fcntl.h> /* open */
+#include <unistd.h> /* read, write, lseek, dup, fork, exit, sleep, execv, execl */
+#include <string.h> /* memset, strcmp */
+#include <sys/wait.h> /* wait */
+
 
 int main(int argc, char** argv) {
 	int error = 0;
 	int fprintf_return = 0;
 	int file_to_read = 0;
 	int fgetc_return = 0;
-	FILE* file_to_fread = NULL;
 	int close_return = 0;
+	int wait_status = 0;
+	FILE* file_to_fread = NULL;
+	pid_t wait_return = NULL;
 	pid_t fork_return = NULL;
 	ssize_t read_return = 0;
 	unsigned char read_buffer[BUFFER_LEN + 1] = "";
@@ -66,7 +71,7 @@ int main(int argc, char** argv) {
 						perror("Error read");
 						return error;
 					}
-					fprintf_return = fprintf(stdout, "chaine lue: %s \n", (unsigned char*)read_buffer);
+					fprintf_return = fprintf(stdout, "Petit fils chaine lue: %s \n", (unsigned char*)read_buffer);
 					if (fprintf_return < 0) {
 						perror("Error fprintf");
 						return fprintf_return;
@@ -80,11 +85,17 @@ int main(int argc, char** argv) {
 					perror("Error read");
 					return error;
 				}
-				fprintf_return = fprintf(stdout, "chaine lue: %s \n", (unsigned char*)read_buffer);
+				fprintf_return = fprintf(stdout, "Fils, chaine lue: %s \n", (unsigned char*)read_buffer);
 				if (fprintf_return < 0) {
 					perror("Error fprintf");
 					return fprintf_return;
 				}
+			}
+			wait_return = wait(&wait_status);
+			if (wait_return == -1) {
+				error = errno;
+				perror("Error wait");
+				return error;
 			}
 			return CHILD_SUCCESS;
 		}
@@ -94,7 +105,7 @@ int main(int argc, char** argv) {
 				perror("Error read");
 				return error;
 			}
-			fprintf_return = fprintf(stdout, "chaine lue: %s \n", (unsigned char*)read_buffer);
+			fprintf_return = fprintf(stdout, "Pere, chaine lue: %s \n", (unsigned char*)read_buffer);
 			if (fprintf_return < 0) {
 				perror("Error fprintf");
 				return fprintf_return;
@@ -107,7 +118,7 @@ int main(int argc, char** argv) {
 			return error;
 		}
 	}
-	if (strcmp(argv[1], LIBC_IO) == 0) {
+	if (strcmp(argv[1], GLIBC_IO) == 0) {
 		file_to_fread = fopen(argv[2], READ);
 		if (file_to_fread == NULL) {
 			error = errno;
@@ -144,6 +155,12 @@ int main(int argc, char** argv) {
 					return fprintf_return;
 				}
 			}
+			wait_return = wait(&wait_status);
+			if (wait_return == -1) {
+				error = errno;
+				perror("Error wait");
+				return error;
+			}
 			return CHILD_SUCCESS;
 		}
 		while ((fgetc_return = fgetc(file_to_fread)) != EOF) {
@@ -159,6 +176,12 @@ int main(int argc, char** argv) {
 			perror("Error close");
 			return error;
 		}
+	}
+	wait_return = wait(&wait_status);
+	if (wait_return == -1) {
+		error = errno;
+		perror("Error wait");
+		return error;
 	}
 	return EXIT_SUCCESS;
 }

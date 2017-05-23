@@ -7,7 +7,7 @@
 
 #define NB_CHILD 2
 
-#include <unistd.h> /* fork, exit */
+#include <unistd.h> /* fork, exit, sleep, execv, execl */
 #include <stdio.h> /* perror, fprintf */
 #include <errno.h> /* errno */
 #include <stdlib.h> /* atoi, EXIT_SUCCESS, EXIT_FAILLURE */
